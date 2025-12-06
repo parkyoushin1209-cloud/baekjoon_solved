@@ -1,0 +1,52 @@
+import sys
+input = sys.stdin.readline
+n, m = map(int,input().split())
+graph = []
+for _ in range(n):
+    graph.append(list(map(int,input().split())))
+dp = [[0 for _ in range(n)] for _ in range(n)]
+dp[0][0] = graph[0][0]
+for a in range(1,n):
+    dp[0][a] = dp[0][a-1] + graph[0][a]
+    dp[a][0] = dp[a-1][0] + graph[a][0]
+for i in range(1,n):
+    dp[i][i] = dp[i-1][i] + dp[i][i-1] - dp[i-1][i-1] + graph[i][i]
+    for a in range(i+1,n):
+        dp[i][a] = dp[i][a-1] + dp[i-1][a] - dp[i-1][a-1] + graph[i][a]
+        dp[a][i] = dp[a][i-1] + dp[a-1][i] - dp[a-1][i-1] + graph[a][i]
+
+for _ in range(m):
+    x1, y1, x2, y2 = map(int,input().split())
+    if x1 == 1 and y1 == 1:
+        print(dp[x2-1][y2-1])
+    elif x1 == 1:
+        print(dp[x2-1][y2-1] - dp[x2-1][y1-2])
+    elif y1 == 1:
+        print(dp[x2-1][y2-1] - dp[x1-2][y2-1])
+    else:
+        print(dp[x2-1][y2-1]-dp[x1-2][y2-1]-dp[x2-1][y1-2] + dp[x1-2][y1-2])
+
+##################################################################
+    
+import sys
+input = sys.stdin.readline
+
+n, m = map(int, input().split())
+graph = [list(map(int, input().split())) for _ in range(n)]
+
+# 0-padding: dp 크기 (n+1)x(n+1)
+dp = [[0]*(n+1) for _ in range(n+1)]
+
+# dp[i][j] = (1,1)~(i,j)까지 합
+for i in range(1, n+1):
+    for j in range(1, n+1):
+        dp[i][j] = dp[i-1][j] + dp[i][j-1] - dp[i-1][j-1] + graph[i-1][j-1]
+
+for _ in range(m):
+    x1, y1, x2, y2 = map(int, input().split())
+    # 케이스 나눌 필요 없이 바로 계산
+    result = dp[x2][y2] - dp[x1-1][y2] - dp[x2][y1-1] + dp[x1-1][y1-1]
+    print(result)
+
+##0 패딩 사용시 가독성 좋아짐 -> 좌표에 1이 포함 될 경우를 나눠서 생각 안 해도 됨
+##그래프까지 0 추가할 필요는 없음
