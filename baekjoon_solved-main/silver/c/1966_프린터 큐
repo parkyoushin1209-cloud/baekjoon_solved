@@ -1,0 +1,89 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX 101
+
+typedef struct {
+	int idx;
+	int value;
+}Info;
+
+typedef struct {
+	Info data[MAX];
+	int front;
+	int rear;
+}Queue;
+
+void initQueue(Queue *q) {
+	q->front = q->rear = 0;
+}
+
+int isempty(Queue* q) {
+	return q->front == q->rear;
+}
+
+void enqueue(Queue* q,int idx,int value) {
+	q->data[q->rear].idx = idx;
+	q->data[q->rear].value = value;
+	q->rear = (q->rear + 1) % MAX;
+}
+
+Info dequeue(Queue* q) {
+	Info result = q->data[q->front];
+	q->front = (q->front + 1) % MAX;
+	return result;
+}
+
+int find_max(Queue* q) {
+	int result = q->data[q->front].value;
+	int i = q->front;
+	while (i != q->rear) {
+		if (q->data[i].value > result) 
+			result = q->data[i].value;
+		i = (i + 1) % MAX;
+	}
+	return result;
+}
+
+int main() {
+	int t;
+	scanf("%d", &t);
+	Queue q;
+	for (int o = 0; o < t; o++) {
+		initQueue(&q);
+		int idx;
+		int result = 0; //횟수
+		int n, m; // 자료 수, 찾는 자료 인덱스 번호
+		scanf("%d %d", &n, &m);
+		for (int p = 0; p < n; p++) {
+			int price;
+			scanf(" %d", &price);
+			enqueue(&q, p, price);
+		}
+		while (1) {
+			int find = find_max(&q);
+			while (1) {
+				Info now = dequeue(&q);
+				if (now.value == find) {
+					result++;
+					idx = now.idx;
+					break;
+				}
+				else {
+					enqueue(&q, now.idx, now.value);
+				}
+			}
+			if (idx == m)
+				break;
+		}
+		printf("%d\n", result);
+	}
+}
+
+##원형 순환 큐 사용시 여러번 반복할 경우 큐 초기화부터
+##함수도 마찬가지로 %MAX 해주기
+##변수 이름 개선:find -> max_value, idx -> target_idx
+##while True 대신 while 조건문으로 하면 가독성 up
+##find_max 에서 큐가 비었을 경우 대비해 return -1반환문도 설정
+## q = deque((i, val) for i, val in enumerate(values)) 파이썬에서 이 방법으로도 큐에 삽입 가능 인덱스,값
