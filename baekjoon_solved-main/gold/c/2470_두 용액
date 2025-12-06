@@ -1,0 +1,49 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+int compare(const void* a, const void* b) {
+	int x = *(int*)a;
+	int y = *(int*)b;
+	return x - y;
+}
+
+int main() {
+	int n;
+	scanf("%d", &n);
+	int start = 0, end = n - 1;
+
+
+	int* data = (int*)malloc(n * sizeof(int));
+	for (int i = 0; i < n; i++)
+		scanf(" %d", &data[i]);
+	qsort(data, n, sizeof(int), compare);
+
+	int result[2] = { data[start],data[end] };
+	int min_abs = abs(data[start] + data[end]);
+
+
+	while (start < end) {
+
+		int hap = data[start] + data[end];
+
+
+		if (min_abs > abs(hap)) {
+			result[0] = data[start], result[1] = data[end];
+			min_abs = abs(hap);
+		}
+
+		if (hap > 0)
+			end--;
+		else if (hap < 0)
+			start++;
+		else
+			break;
+	}
+	printf("%d %d\n", result[0], result[1]);
+
+	free(data);
+	return 0;
+}
+##while문 조건 확인하기**, 파이썬 sum 사용 안해도 될 경우 다른 방식 사용
+##원래 인덱스 유지 안 해도 될 경우 정렬 후 풀이 생각하기
