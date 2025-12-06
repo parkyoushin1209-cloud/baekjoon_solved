@@ -1,0 +1,16 @@
+      visited[nx][ny] = True
+                    q.append((nx,ny))
+result = 0
+for i in range(max_h+1):
+    visited = [[False for _ in range(n)]for _ in range(n)]
+    cnt = 0
+    for a in range(n):
+        for b in range(n):
+            if graph[a][b] > i and not visited[a][b]:
+                bfs(a,b,i,visited)
+                cnt += 1
+    result = max(result,cnt)
+print(result)
+## 세트는 슬라이싱 X
+## map(max,graph) = graph 행 내에서 가장 큰 요소 찾기
+## bfs, dfs 호출한 후 호출 횟수 셀 수 있음
