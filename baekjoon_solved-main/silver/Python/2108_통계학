@@ -1,0 +1,40 @@
+n = int(input())
+data =[]
+for _ in range(n):
+    data.append(int(input()))
+if n == 1:
+    a = b = c =data[0]
+    d = 0
+else:
+    d = {}
+    for i in data:
+        if i not in d:
+            d[i] = 1
+        else:
+            d[i] += 1
+    m = [(value, su) for value, su in d.items()]
+    m.sort(key = lambda x:(-x[1],x[0]),reverse = True)
+    c = m[-2][0] if m[-2][1] == m[-1][1] else m[-1][0]
+
+    a = round(sum(data) /len(data))
+    data2 = sorted(data)
+    b = data2[n//2]
+    max_value = max(data)
+    min_value = min(data)
+    d = max_value - min_value
+print(a)
+print(b)
+print(c)
+print(d)
+
+##최빈값 구하기
+from collections import Counter
+
+cnt = Counter(data) ##리스트에서 각 값이 몇 번 나왔는지 세줌, Counter({3: 3, 1: 2, 2: 1})
+most_common = cnt.most_common()  # 빈도 순으로 정렬된 튜플리스트 [(3, 3), (1, 2), (2, 1)]
+max_freq = most_common[0][1]
+
+# 최빈값 후보들 추출
+candidates = [val for val, freq in most_common if freq == max_freq]
+candidates.sort()
+c = candidates[1] if len(candidates) > 1 else candidates[0]
