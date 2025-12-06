@@ -1,0 +1,24 @@
+n = int(input())
+request = list(map(int,input().split()))
+m = int(input())
+answer = 0
+start = 0
+end = max(request)
+if sum(request) <= m:
+    answer = max(request)
+else:
+    target = sum(request) - m
+    while start <= end:
+        mid = (start+end) // 2
+        hap = 0
+        for i in request:
+            if i > mid:
+                hap += (i-mid)
+        if hap < target:
+            end = mid - 1
+        elif hap >= target:
+            answer = mid
+            start = mid + 1
+print(answer)
+## cut = sum(max(0, r - mid) for r in requests)떼어내는 과정 수정 가능
+##exit()로 바로 종료 가능
