@@ -1,0 +1,25 @@
+n, h = map(int,input().split())
+data = []
+for _ in range(n):
+    data.append(int(input()))
+
+nu = [0] * (h+1)
+for i in range(n):
+    if i % 2 == 0:
+        nu[0] += 1
+        nu[data[i]+1] -= 1
+    else:
+        nu[h-data[i]+1] += 1
+
+result = [0] * (h+1)
+result[0] = nu[0]
+for i in range(1, h+1):
+    result[i] = result[i-1] + nu[i]
+cnt = 0
+min_value = min(result[i] for i in range(1,h+1))
+for i in range(1,h+1):
+    if result[i] == min_value:
+        cnt += 1
+
+print(min_value,cnt)
+##누적합 사용 누적합 관련 문제 풀어보기
