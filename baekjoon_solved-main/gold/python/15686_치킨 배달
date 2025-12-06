@@ -1,0 +1,36 @@
+from itertools import combinations
+n, m = map(int,input().split())
+
+graph = []
+for _ in range(n):
+    graph.append(list(map(int,input().split())))
+
+house = []
+store = []
+choose = []
+
+for a in range(n):
+    for b in range(n):
+        if graph[a][b] == 1:
+            house.append([a,b])
+        elif graph[a][b] == 2:
+            store.append([a,b])
+
+for i in combinations(store,m):
+    choose.append(i)
+chi_distance_candi = []
+for a in choose:
+    result = 0
+    for b in house:
+        result += min((abs(b[0] - a[i][0]) + abs(b[1] - a[i][1]))for i in range(m))
+    chi_distance_candi.append(result)
+print(min(chi_distance_candi))
+
+##가독성 좋은 버전
+for selected in combinations(store, m): ##choose 리스트 필요 X
+    total = 0
+    for hx,hy in house: 
+        dist = min(abs(hx - cx) + abs(hy - cy) for cx, cy in selected)
+        total += dist
+    chi_distance_candi.append(total) 
+##변수명 가독성 고려
