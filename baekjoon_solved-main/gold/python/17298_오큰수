@@ -1,0 +1,21 @@
+import sys
+input = sys.stdin.readline
+n = int(input())
+data = list(map(int,input().split()))
+stack = [[data[0],0]]
+result = [0 for _ in range(n)]
+for i in range(1,n):
+    m = data[i]
+    if stack:
+        while m > stack[-1][0]: 
+            value, idx = stack.pop()
+            result[idx] = m
+            if not stack:
+                break
+    stack.append([m,i])
+while stack:
+    value, idx = stack.pop()
+    result[idx] = -1
+print(" ".join(str(i) for i in result))
+##변수명 m -> current로 value, idx -> prev_value,prev_idx로
+### while stack and m > stack[-1][0] 으로 수정 외부에 있을 경우 일시적 -> 인덱스 오류
