@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX 20002
+int Queue[MAX];
+int front = 10000;
+int rear = 10000;
+
+void push_front(int value) {
+	Queue[--front] = value;
+}
+
+void push_back(int value) {
+	Queue[rear++] = value;
+}
+
+int pop_front() {
+	return Queue[front++];
+}
+
+int pop_back() {
+	return Queue[--rear];
+}
+
+void initQueue() {
+	front = rear = 10000;
+}
+
+int isempty() {
+	return front == rear;
+}
+
+int main() {
+	initQueue();
+	int n;
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++) {
+		char s[30];
+		scanf("%s", s);
+		if (!strcmp(s, "push_front")) {
+			int x;
+			scanf("%d", &x);
+			push_front(x);
+		}
+		else if (!strcmp(s, "push_back")) {
+			int x;
+			scanf("%d", &x);
+			push_back(x);
+		}
+		else if (!strcmp(s, "pop_front")) {
+			if (front == rear)
+				printf("-1\n");
+			else
+			printf("%d\n", pop_front());
+		}
+		else if (!strcmp(s, "pop_back")) {
+			if (front == rear)
+				printf("-1\n");
+			else
+			printf("%d\n", pop_back());
+		}
+		else if (!strcmp(s, "size")) {
+			printf("%d\n", rear - front);
+		}
+		else if (!strcmp(s, "empty")) {
+			if (front == rear)
+				printf("1\n");
+			else
+				printf("0\n");
+		}
+		else if (!strcmp(s, "front")) {
+			if (front == rear)
+				printf("-1\n");
+			else
+			printf("%d\n", Queue[front]);
+		}
+		else if (!strcmp(s, "back")) {
+			if (front == rear)
+				printf("-1\n");
+			else
+			printf("%d\n",Queue[rear-1]);
+		}
+	}
+}
+##python으로도 appendleft,append,pop,popleft 등으로 구현 가능
