@@ -1,0 +1,48 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+int l, c; // L = 번호 길이 , C = 입력데이터
+int check_mo = 0, check_ja = 0;
+char number[16];
+char k = 'x';
+int compare(void const* a, void const* b) {
+	char x = *(char*)a;
+	char y = *(char*)b;
+	return x - y;
+}
+
+
+
+void making_number(int depth, int start,char data[]) {
+	if (depth == l && check_mo >= 1 && check_ja >= 2) {
+		for (int i = 0; i < l; i++)
+			printf("%c", number[i]);
+		printf("\n");
+		return;
+	}
+
+	for (int i = start; i < c; i++) {
+		number[depth] = data[i];
+		int isMo = (data[i] == 'a' || data[i] == 'e' || data[i] == 'i' || data[i] == 'o' || data[i] == 'u');
+
+		if (isMo) check_mo++;
+		else      check_ja++;
+		making_number(depth + 1, i+1 ,data);
+		if (isMo) check_mo--;
+		else      check_ja--;
+	}
+}
+
+int main() {
+	scanf("%d %d", &l, &c);
+	char* data = (char*)malloc(c * sizeof(char));
+	for (int i = 0; i < c; i++)
+		scanf(" %c", &data[i]);
+	qsort(data, c, sizeof(char), compare);
+	making_number(0, 0,data);
+	
+	free(data);
+	return 0;
+}
+##백트래킹 -> 바로 전 단계로 복구시키기 check_mo, check_ja 를 바로 0으로 초기화 x
+## 복원로직 학습하기 k ='x' -> 'j' -> 'x' 반복이면 누적 X->오류
