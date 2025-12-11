@@ -1,0 +1,19 @@
+import sys
+import heapq
+input = sys.stdin.readline
+max_data = []
+min_data = []
+n = int(input())
+for _ in range(n):
+    x = int(input())
+    heapq.heappush(max_data,-x)
+    heapq.heappush(min_data,-heapq.heappop(max_data))
+
+    if len(min_data) > len(max_data):
+        heapq.heappush(max_data,-heapq.heappop(min_data))
+
+    print(-max_data[0])
+
+## 중앙값 출력
+## max <-> min -> 양쪽리스트를 종합하여 정렬
+##res.append(str(-max_data[0])) '\n'.join(res) -> 출력 더 빠름
