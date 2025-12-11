@@ -1,0 +1,53 @@
+import sys
+from collections import deque
+input = sys.stdin.readline
+
+n, l, r = map(int,input().split())
+graph = []
+for _ in range(n):
+    graph.append(list(map(int,input().split())))
+
+dx = [1,-1,0,0]
+dy = [0,0,1,-1]
+
+def bfs(sx,sy):
+    visited[sx][sy] = True
+    hap = graph[sx][sy]
+    q = deque()
+    repo = deque()
+    q.append((sx,sy))
+    check = 0
+    while q:
+        x,y = q.popleft()
+        repo.append((x,y))
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+            if 0 <= nx < n and 0 <= ny < n:
+                if not visited[nx][ny] and l <= abs(graph[nx][ny] - graph[x][y]) <= r:
+                    visited[nx][ny] = True
+                    hap += graph[nx][ny]
+                    q.append((nx,ny))
+                    check = 1
+    avg = hap // len(repo)
+    while repo:
+        x, y = repo.popleft()
+        graph[x][y] = avg
+    return True if check == 1 else False
+day = 0
+
+while True:
+    visited = [[False] * n for _ in range(n)]
+    moved = False
+    for a in range(n):
+        for b in range(n):
+            if not visited[a][b]:
+                if bfs(a,b):
+                    moved = True
+    if not moved:
+        break
+    day += 1
+print(day)
+## move는 항상 갱신 X bfs에서 True를 반환한 경우만 갱신하기
+## check => return len(repo) > 1 할 경우 삭제 가능
+## repo를 덱으로 안 하고 리스트로 하고 해도 가능
