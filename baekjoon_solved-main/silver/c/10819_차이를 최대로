@@ -1,0 +1,56 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX_N 10
+#define INF 1e9
+
+int selected[MAX_N];
+int array[MAX_N];
+int n;
+int visited[MAX_N] = { 0 };
+int max_value = -INF;
+int front = 0;
+int rear = 0;
+
+void enqueue(int value) {
+	selected[rear++] = value;
+}
+
+void pop() {
+	--rear;
+}
+
+int max(int a,int b) {
+	if (a > b)return a;
+	else return b;
+}
+
+void backtrack(int depth) {
+	if (depth == n) {
+		int sum = 0;
+		for (int i = 0; i <= n - 2; i++)
+			sum += abs(selected[i] - selected[i + 1]);
+		if (max_value < sum)
+			max_value = sum;
+	}
+
+	for (int j = 0; j < n; j++) {
+		if (!visited[j]) {
+			visited[j] = 1;
+			enqueue(array[j]);
+			backtrack(depth + 1);
+			pop();
+			visited[j] = 0;
+		}
+	}
+}
+
+int main() {
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++)
+		scanf(" %d", &array[i]);
+	backtrack(0);
+	printf("%d",max_value);
+	return 0;
+}
