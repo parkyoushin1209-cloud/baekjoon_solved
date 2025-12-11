@@ -1,0 +1,116 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX 10001
+#define max 101
+int dx[4] = { -1,1,0,0 };
+int dy[4] = { 0,0,1,-1 };
+int n;
+
+
+typedef struct {
+	int x;
+	int y;
+}Node;
+
+typedef struct {
+	Node data[MAX];
+	int front;
+	int rear;
+}Queue;
+
+
+void initQueue(Queue* q) {
+	q->front = 0;
+	q->rear = 0;
+}
+
+int isempty(Queue* q) {
+	return q->front == q->rear;
+}
+
+void enqueue(Queue* q, int x, int y) {
+	q->data[q->rear].x = x;
+	q->data[q->rear].y = y;
+	q->rear = (q->rear + 1) % MAX;
+}
+
+Node dequeue(Queue* q) {
+	Node result = q->data[q->front];
+	q->front = (q->front + 1) % MAX;
+	return result;
+}
+
+
+
+void bfs(char** graph,int sx,int sy,Queue*q){
+	initQueue(q);
+	char key = graph[sx][sy];
+	graph[sx][sy] = 'y';
+	enqueue(q, sx, sy);
+	while (!isempty(q)) {
+		Node now = dequeue(q);
+		int x = now.x;
+		int y = now.y;
+		for (int i = 0; i < 4; i++) {
+			int nx = x + dx[i];
+			int ny = y + dy[i];
+			if (0 <= nx && nx < n && 0 <= ny && ny < n) {
+				if (graph[nx][ny] == key) {
+					graph[nx][ny] = 'y';
+					enqueue(q, nx, ny);
+				}
+			}
+		}
+	}
+}
+
+int main() {
+	scanf("%d", &n);
+	Queue q;
+	char** ngraph = (char**)malloc(n * sizeof(char*));
+	char** mgraph = (char**)malloc(n * sizeof(char*));
+	for (int i = 0; i < n; i++) {
+		ngraph[i] = (char*)malloc((n + 1) * sizeof(char));
+		mgraph[i] = (char*)malloc((n + 1) * sizeof(char));
+	    scanf("%s", ngraph[i]);
+        for (int j = 0; j < n; j++)
+            mgraph[i][j] = (ngraph[i][j] == 'G') ? 'R' : ngraph[i][j];
+	}
+	int ncnt = 0,mcnt = 0;
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (ngraph[i][j] != 'y') {
+				bfs(ngraph, i, j, &q);
+				ncnt++;
+			}
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (mgraph[i][j] != 'y') {
+				bfs(mgraph, i, j, &q);
+				mcnt++;
+			}
+		}
+	}
+	printf("%d %d", ncnt,mcnt);
+
+
+
+	for (int i = 0; i < n; i++) {
+		free(mgraph[i]);
+		free(ngraph[i]);
+	}
+
+	free(mgraph);
+	free(ngraph);
+
+	return 0;
+}
+##이차원 동적할당 리스트는 **로 넘겨줌
+##s는 동적할당 없이 그냥 ngraph로 받기
+## mgraph[i][j] = (ngraph[i][j] == 'G') ? 'R' : ngraph[i][j]; 참이면 -> R 거짓이면 ->ngraph[i][j]로
