@@ -1,0 +1,108 @@
+import sys
+from collections import deque
+input = sys.stdin.readline
+
+
+def finding(target,length):
+    idx = 0
+    while True:
+        if array[idx] == target:
+            return (idx,1) if idx < length - idx else (length - idx,2)
+        else:
+            idx += 1
+
+
+n, m = map(int,input().split()) ##n => 요소 개수 m => 찾을 개수
+array = deque(range(1,n+1))
+find = list(map(int,input().split()))
+find_key = 0  ## target =? find[find_key] 찾으면 n -= 1, find_key += 1
+hap = 0
+
+while find_key < m:
+    value, move = finding(find[find_key],n)
+    hap += value
+    if move == 1:
+        for _ in range(value):
+            array.append(array.popleft())
+        array.popleft()
+    elif move == 2:
+        for _ in range(value):
+            array.appendleft(array.pop())
+        array.popleft()
+    find_key += 1
+    n -= 1
+print(hap)
+
+
+ans = 0
+
+for t in targets:
+    idx = array.index(t)
+    
+    # 왼쪽 이동이 빠르면
+    if idx <= len(array) // 2:
+        array.rotate(-idx)
+        ans += idx
+    else:  # 오른쪽 이동이 빠르면
+        array.rotate(len(array) - idx)
+        ans += (len(array) - idx)
+    
+    array.popleft()   # 제거
+
+print(ans)
+
+##rotate(양수) : 뒤로 밀기 12345 -> 45123
+##rotate(음수) : 앞으로 밀기 12345 -> 34512 시간복잡도 O(1) 에 가까움
+## dq = deque([1, 2, 3], maxlen=3)
+##  dq.append(4) 1 제거 후 2,3,4 maxlen -> 덱 고정크기 설정 넘으면 삭제
+## .index(요소) -> 그 요소의 인덱스 반환 왼쪽 이동은 len // 2 값보다 작으면 앞으로 밀기 아님 뒤로
+
+#include <stdio.h>
+
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
+
+    int arr[10000];
+    for (int i = 0; i < n; i++) arr[i] = i + 1;
+
+    int front = 0;      // 큐의 시작 인덱스
+    int size = n;       // 현재 큐 크기
+    int ans = 0;
+
+    for (int i = 0; i < m; i++) {
+        int target;
+        scanf("%d", &target);
+
+        // target이 큐에서 몇 번째 위치에 있는지 찾기
+        int pos = 0;
+        for (int k = 0; k < size; k++) {
+            int idx = (front + k) % n;
+            if (arr[idx] == target) {
+                pos = k;
+                break;
+            }
+        }
+
+        // 왼쪽 이동과 오른쪽 이동 중 작은 쪽 선택
+        int left = pos;
+        int right = size - pos;
+
+        if (left <= right) {
+            ans += left;
+            // front를 왼쪽 pos만큼 이동(= 왼쪽 회전)
+            front = (front + left) % n;
+        } else {
+            ans += right;
+            // front를 오른쪽으로 right만큼 이동
+            front = (front - right + n) % n;
+        }
+
+        // 이제 front가 target을 가리키므로 제거
+        front = (front + 1) % n; 
+        size--;
+    }
+
+    printf("%d\n", ans);
+    return 0;
+}
