@@ -1,0 +1,52 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX_N 20
+#define INF 1e9
+
+int n;
+int graph[MAX_N][MAX_N];
+int selected[MAX_N];
+int min_diff = INF;
+
+int team_sum(int team_flag) {
+	int sum = 0;
+	for (int i = 0; i < n; i++) {
+		if (selected[i] != team_flag)continue;
+		for (int j = i + 1; j < n; j++) {
+			if (selected[j] != team_flag)continue;
+			sum += graph[i][j] + graph[j][i];
+		}
+	}
+	return sum;
+}
+
+void backtrack(int idx, int depth) {
+	if (depth == n / 2) {
+		int teama = team_sum(1);
+		int teamb = team_sum(0);
+		int diff = abs(teama - teamb);
+		if (diff < min_diff) min_diff = diff;
+		return;
+	}
+	for (int i = idx; i < n; i++) {
+		if (!selected[i]) {
+			selected[i] = 1;
+			backtrack(i + 1, depth + 1);
+			selected[i] = 0;
+		}
+	}
+}
+int main() {
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++)
+			scanf(" %d", &graph[i][j]);
+	}
+	backtrack(0, 0);
+	printf("%d\n", min_diff);
+
+	return 0;
+}
+##백트래킹 -> 팀 나누기 1, 0으로 나누기
