@@ -1,0 +1,38 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX 1002
+int dp[MAX][MAX] = { 0 };
+
+
+int max(int a, int b) {
+	if (a > b) return a;
+	else return b;
+}
+
+int lcs(char s1[], char s2[]) {
+	int n = strlen(s1);
+	int m = strlen(s2);
+	int result = 0;
+	for (int i = 1; i < n+1; i++) {
+		for (int j = 1; j < m+1; j++) {
+			if (s1[i-1] == s2[j-1])
+				dp[i][j] = dp[i - 1][j - 1] + 1;
+			else 
+				dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+			if (result < dp[i][j])
+				result = dp[i][j];
+		}
+	}
+	return result;
+}
+
+int main() {
+	char s1[MAX];
+	char s2[MAX];
+	scanf("%s", s1);
+	scanf("%s", s2);
+	printf("%d\n", lcs(s1, s2));
+	return 0;
+}
