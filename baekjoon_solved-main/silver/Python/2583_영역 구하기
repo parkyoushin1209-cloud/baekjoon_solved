@@ -1,0 +1,53 @@
+from collections import deque
+m, n, k = map(int,input().split())
+graph = [[0 for _ in range(n)] for _ in range(m)]
+for _ in range(k):
+    x1, y1, x2, y2 = map(int,input().split())
+    for a in range(m-y2,m-y1):
+        for b in range(x1,x2):
+            graph[a][b] = 1
+dx = [-1,1,0,0]
+dy = [0,0,1,-1]
+def bfs(sx,sy):
+    q = deque()
+    q.append((sx,sy))
+    graph[sx][sy] = 1
+    cnt = 1
+    while q:
+        x, y = q.popleft()
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+            if 0 <= nx < m and 0 <= ny < n:
+                if graph[nx][ny] == 0:
+                    graph[nx][ny] = 1
+                    cnt += 1
+                    q.append((nx,ny))
+    return cnt
+result = []
+count = 0
+for a in range(m):
+    for b in range(n):
+        if graph[a][b] == 0:
+            result.append(bfs(a,b))
+            count += 1
+print(count)
+result.sort()
+print(*result)
+#########################
+##좌표변환
+for _ in range(k):
+    x1, y1, x2, y2 = map(int,input().split())
+    for y in range(y1, y2):
+        for x in range(x1, x2):
+            graph[m-1-y][x] = 1
+##x,n // y,m 기준 (xy는 수학적 좌표축기준 n = 가로, m = 세로) 
+##문제 높이 0~m-1 -> 좌표 뒤집음 m-1-y
+## row = m - 1 - y (상하대칭) col = x
+## col = n - 1 - x(좌우대칭) row = y
+## new_row = y // new_col = m - 1 - x(90도 회전)
+## new_row = m - 1 - y  //  new_col = n - 1 - x(180도)
+## new_row = n - 1 - y  //  new_col = x(270도)
+## x, y = y, x(주대각선 대칭  \)
+## x, y = n - 1 - y, m - 1 - x(역대각선 대칭  /)
+## x, y = x + dx, y + dy (좌표 이동)
