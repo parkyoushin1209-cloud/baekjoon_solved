@@ -1,0 +1,91 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 2601
+#define max 51
+
+typedef struct {
+	int x;
+	int y;
+}Coordinate;
+
+typedef struct Queue{
+	Coordinate data[MAX];
+	int front = 0;
+	int rear = 0;
+}Queue;
+
+void initQueue(Queue* q) {
+	q->front = q->rear = 0;
+}
+
+int isempty(Queue* q) {
+	return q->front == q->rear;
+}
+
+void enqueue(Queue* q,int x,int y) {
+	q->data[q->rear].x = x;
+	q->data[q->rear].y = y;
+	q->rear = (q->rear + 1) % MAX;
+}
+
+Coordinate dequeue(Queue* q) {
+	Coordinate result = q->data[q->front];
+	q->front = (q->front + 1) % MAX;
+	return result;
+}
+
+int dx[8] = { -1,1,0,0,1,1,-1,-1 };
+int dy[8] = { 0,0,1,-1,1,-1,1,-1 };
+
+int graph[max][max];
+
+void bfs(int graph[][max], int sx, int sy, Queue* q, int h, int w) {
+	enqueue(q, sx, sy);
+	graph[sx][sy] = 0;
+	while (!isempty(q)) {
+		Coordinate now = dequeue(q);
+		int x = now.x;
+		int y = now.y;
+		for (int i = 0; i < 8; i++) {
+			int nx = x + dx[i];
+			int ny = y + dy[i];
+			if (0 <= nx && nx < h && 0 <= ny && ny < w) {
+				if (graph[nx][ny] == 1) {
+					graph[nx][ny] = 0;
+					enqueue(q, nx, ny);
+				}
+			}
+		}
+	}
+}
+
+int main() {
+	Queue q;
+	while (1) {
+		int w, h;
+		scanf("%d %d", &w, &h);
+		initQueue(&q);
+		int cnt = 0;
+		if (h == 0 && w == 0)
+			break;
+		for (int r = 0; r < h; r++) {
+			for (int c = 0; c < w; c++) 
+				scanf(" %d", &graph[r][c]);
+		}
+		for (int a = 0; a < h; a++) {
+			for (int b = 0; b < w; b++) {
+				if (graph[a][b] == 1) {
+					bfs(graph, a, b, &q, h, w);
+					cnt++;
+				}
+			}
+		}
+		printf("%d\n", cnt);
+	}
+	return 0;
+}
+## main지역에서 선언한 queue를 밖으로 보내려면 포인터 사용 필요
+## main 지역에서는 주소를 넘겨야 함
+## bfs 내부에서는 &q가 아니라 q사용
