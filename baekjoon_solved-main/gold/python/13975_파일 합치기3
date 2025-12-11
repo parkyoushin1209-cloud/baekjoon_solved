@@ -1,0 +1,17 @@
+import sys
+import heapq
+input = sys.stdin.readline
+t = int(input())
+for _ in range(t):
+    k = int(input())
+    data = list(map(int,input().split()))
+    heapq.heapify(data)
+    result = 0
+    while True:
+        hap = heapq.heappop(data) + heapq.heappop(data)
+        result += hap
+        heapq.heappush(data,hap)
+        if len(data) == 1:
+            break
+    print(result)
+## heapq.heapify == 일반 리스트 힙으로 사용가능하게 해줌
