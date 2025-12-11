@@ -1,0 +1,49 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+int n, m; // L = 번호 길이 , C = 입력데이터
+int choosen[9];
+int visited[9] = { 0 };
+
+int compare(void const* a, void const* b) {
+	int x = *(int*)a;
+	int y = *(int*)b;
+	return x - y;
+}
+
+void back_tracking(int depth, int array[], int prev,int pre) {
+	if (depth == m) {
+
+		for (int i = 0; i < m; i++)
+			printf("%d ", choosen[i]);
+		printf("\n");
+		return;
+	}
+	prev = 0;
+	for (int i = 0; i < n; i++) {
+		if (array[i] == prev || visited[i] || array[i] < pre) continue;
+		visited[i] = 1;
+		choosen[depth] = array[i];
+		prev = array[i];
+		pre = array[i];
+		back_tracking(depth + 1, array, array[i],array[i]);
+		visited[i] = 0;
+	}
+}
+
+
+
+int main() {
+	scanf("%d %d", &n, &m);
+	int* array = (int*)malloc(n * sizeof(int));
+	for (int i = 0; i < n; i++)
+		scanf(" %d", &array[i]);
+	qsort(array, n, sizeof(int), compare);
+
+	back_tracking(0, array, 0,0);
+	free(array);
+	return 0;
+}
+##해당 depth에서만 필요하면 반복문 밖에서 다시 초기화 prev = 0; for(~~~)
+##prev는 해당 depth 빠져나오면 초기화 ->pre 따로 설정
+##백트래킹 재귀함수 호출 이후 prev초기화는 X
