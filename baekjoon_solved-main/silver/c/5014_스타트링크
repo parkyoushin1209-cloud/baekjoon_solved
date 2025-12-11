@@ -1,0 +1,59 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 1000001
+
+int full, start, target, up, down;
+int Queue[MAX];
+int front = 0;
+int rear = 0;
+
+void initQueue() {
+	front = rear = 0;
+}
+
+int isempty() {
+	return front == rear;
+}
+
+void enqueue(int value) {
+	Queue[rear++] = value;
+}
+
+int dequeue() {
+	return Queue[front++];
+}
+
+void bfs(int start,int cnt[]) {
+	enqueue(start);
+	cnt[start] = 0;
+	while (!isempty()) {  //isempty 후에 () 추가
+		int now = dequeue();
+		int move[2] = { now + up, now - down };
+		for (int i = 0; i < 2; i++) {
+			if (1 <= move[i] && move[i] <= full) {
+				if (cnt[move[i]] == -1) {
+					cnt[move[i]] = cnt[now] + 1;
+					enqueue(move[i]);
+				}
+			}
+		}
+	}
+}
+
+int main() {
+	initQueue();
+	scanf("%d %d %d %d %d", &full, &start, &target, &up, &down);
+	int* cnt = (int*)malloc((full + 1) * sizeof(int));
+	for (int i = 0; i <= full;i++) { //0 안 써도 0부터 초기화하면 보기 좋음
+		cnt[i] = -1;
+	}
+	bfs(start,cnt);
+	if (cnt[target] == -1)
+		printf("use the stairs\n");
+	else
+		printf("%d\n", cnt[target]);
+	free(cnt);
+	return 0;
+}
