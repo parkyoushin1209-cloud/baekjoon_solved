@@ -1,0 +1,73 @@
+import sys
+input = sys.stdin.readline
+
+n, d = map(int, input().split())
+shortcuts = []
+
+for _ in range(n):
+    s, e, l = map(int, input().split())
+    # 목적지 넘거나 일반도로보다 길면 제외
+    if e > d or e - s <= l:
+        continue
+    shortcuts.append((s, e, l))
+
+# 시작점 기준 정렬
+shortcuts.sort()
+
+dp = [i for i in range(d + 1)]   # 기본: 0→i 는 i만큼 걸림
+idx = 0
+m = len(shortcuts)
+
+for i in range(d + 1):
+    if i > 0:
+        dp[i] = min(dp[i], dp[i - 1] + 1)
+
+    # i에서 시작하는 모든 지름길 적용
+    while idx < m and shortcuts[idx][0] == i:
+        s, e, l = shortcuts[idx]
+        dp[e] = min(dp[e], dp[s] + l)
+        idx += 1
+
+print(dp[d])
+
+##리스트 줄어듬, 딕셔너리 사용 없이 정렬 후 시작점 도달 후 지름길 적용 시작
+##지름길로 인해 앞서 값이 바꼈을 경우 대비해 for문에서 dp[i] 다시 찾음
+
+##########3
+import sys
+import heapq
+input = sys.stdin.readline
+n, target = map(int,input().split())
+links = []
+start_group=[]
+end_group=[]
+length_group=[]
+end_idx = {}
+dp = [i for i in range(target+1)]
+idx = 0
+for _ in range(n):
+    start, end, length = map(int,input().split())
+    check = 0
+    if end > target or end-start < length:
+        continue
+    for i in range(idx):
+        if start == start_group[i] and end == end_group[i] and length > length_group[i]:
+            check = 1
+            break
+    if not check:
+        start_group.append(start)
+        end_group.append(end)
+        length_group.append(length)
+        if end in end_idx.keys():
+            end_idx[end].append(idx)
+        else:
+            end_idx[end] = [idx]
+        idx += 1
+
+
+for i in range(target+1):
+    dp[i] = min(dp[i-1]+1,dp[i])
+    if i in end_idx:
+        for j in end_idx[i]:
+            dp[i] = min(dp[i],dp[start_group[j]] + length_group[j] )
+print(dp[target])
