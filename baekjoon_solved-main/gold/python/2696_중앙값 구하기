@@ -1,0 +1,27 @@
+import sys
+import heapq
+import math
+input = sys.stdin.readline
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    data = []
+    while len(data) < n:
+        data += list(map(int, input().split()))
+    max_data = []
+    min_data = []
+    print(math.ceil(n/2))
+    for i in range(1,n+1):
+        heapq.heappush(max_data, -data[i-1])
+        heapq.heappush(min_data,-heapq.heappop(max_data))
+
+        if len(min_data) > len(max_data):
+            heapq.heappush(max_data,-heapq.heappop(min_data))
+        if i % 2 == 1:
+            print(-max_data[0], end=' ')
+    print()
+    ## 한줄에 10개씩 입력 가능 -> 다음 코드 사용
+    n = int(input())
+    data = []
+    while len(data) < n:
+        data += list(map(int, input().split()))
