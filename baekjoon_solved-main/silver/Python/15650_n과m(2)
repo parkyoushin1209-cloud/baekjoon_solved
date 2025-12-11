@@ -1,0 +1,7 @@
+from itertools import combinations
+n, m = map(int,input().split())
+array = [i for i in range(1,n+1)]
+for i in combinations(array,m):
+    print(*list(i))
+## 파이썬 언패킹 print(*choosen, sep=',')  # 1,2,3
+## print(*choosen, sep='')   # 123
