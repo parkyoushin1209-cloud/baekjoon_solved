@@ -1,0 +1,36 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+int n, m;
+int data[10];
+
+void comb(int depth, int start) {
+	if (depth == m) {
+		for (int i = 0; i < m; i++) {
+			printf("%d ", data[i]);
+		}
+		printf("\n");
+		return;
+	}
+
+	for (int i = start; i <= n; i++) {
+		data[depth] = i;
+		comb(depth + 1, i);
+	}
+}
+
+int main() {
+	scanf("%d %d", &n, &m);
+	comb(0, 1);
+	return 0;
+}
+#######################################
+
+from itertools import combinations_with_replacement
+
+n, m = map(int, input().split())
+array = list(range(1, n+1))
+
+for c in combinations_with_replacement(array, m):
+    print(*c)
+##*언패킹은 세트도 가능
