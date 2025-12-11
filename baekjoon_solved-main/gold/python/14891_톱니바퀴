@@ -1,0 +1,42 @@
+import sys
+from collections import deque
+input = sys.stdin.readline
+data = deque([deque([0]*8) for _ in range(5)])
+for i in range(1,5):
+    s = input()
+    for j in range(8):
+        data[i][j] = int(s[j])
+
+
+def rotating(n,i):
+    j = 1 if i == -1 else -1
+    visited[n] = True
+    if n > 0:
+        if data[n][6] != data[n-1][2] and not visited[n-1]:
+            rotating(n-1,j)
+    if n < 4:
+        if data[n][2] != data[n+1][6] and not visited[n+1]:
+            rotating(n+1,j)
+    if i == 1:
+        data[n].appendleft(data[n].pop())
+    else:
+        data[n].append(data[n].popleft())
+
+
+k = int(input())
+
+for _ in range(k):
+    visited = [False] * 5
+    n, s = map(int,input().split())
+    rotating(n,s)
+hap = 0
+for i in range(1,5):
+    if data[i][0] == 1:
+        hap += 2 ** (i-1)
+print(hap)
+
+
+
+
+data = deque([deque([0]*8)] + [deque(map(int, input().strip())) for _ in range(4)])
+ ##2차원 dp 리스트 컴프리 헨션 방법 - 각각의 행에 대하여 deque 처리 필요
