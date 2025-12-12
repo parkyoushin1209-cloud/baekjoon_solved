@@ -1,0 +1,50 @@
+import sys
+sys.setrecursionlimit(10000)
+input = sys.stdin.readline
+INF = int(1e9)
+
+
+n = int(input())
+mp, mf, ms, mv = map(int,input().split())
+data = [[0] * 5]
+for _ in range(n):
+    data.append([0] + list(map(int,input().split())))
+
+
+selected = [] ## index 저장 1 ~ 6
+result = [INF] ##가격 + 인덱스 저장
+
+def backtrack(index):
+    if index == n+1:
+        l = len(selected)
+        allp, allf, alls, allv, allc = 0, 0, 0, 0, 0
+        for i in range(l):
+            allp += data[selected[i]][1]
+            allf += data[selected[i]][2]
+            alls += data[selected[i]][3]
+            allv += data[selected[i]][4]
+            allc += data[selected[i]][5]
+        if allp < mp or allf < mf or alls < ms or allv < mv:
+            return
+        global result
+        if result[-1] > allc:
+            result[:] = selected[:] + [allc] 
+        elif result[-1] == allc and selected < result[:-1]: ## 리스트 비교시 자동으로 사전순으로 비교함
+            result[:] = selected[:] + [allc]
+        return
+
+    selected.append(index)
+    backtrack(index + 1)
+    selected.pop()
+    backtrack(index + 1)
+backtrack(1)
+if result[0] == INF:
+    print(-1)
+else:
+    print(result[-1])
+    result.pop()
+    print(*sorted(result))
+
+## result = selected + [allc] => 리스트 전체 재할당 => 출력 구조 깨짐 [:] 사용해서 슬라이딩으로 내용만 교체
+ ## 리스트 비교시 자동으로 사전순으로 비교함 요소가 같을 경우 짧은게 앞
+ ## selected로만 append하면 참조 => 이후 비워지면 같이 지워짐 => seleted[:] 로 복사
