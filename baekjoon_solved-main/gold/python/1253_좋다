@@ -1,0 +1,26 @@
+import sys
+input = sys.stdin.readline
+
+n = int(input())
+data = sorted(list(map(int,input().split())))
+cnt = 0
+for i in range(len(data)):
+    start = 0
+    end = n-1
+    while start < end:
+        if start == i:
+            start += 1
+            continue
+        elif end == i:
+            end -= 1
+            continue
+        interval_sum = data[start] + data[end]
+        if interval_sum <= data[i]:
+            if interval_sum == data[i]:
+                cnt += 1
+                break
+            start += 1
+
+        else:##interval_sum > target
+            end -= 1
+print(cnt)
