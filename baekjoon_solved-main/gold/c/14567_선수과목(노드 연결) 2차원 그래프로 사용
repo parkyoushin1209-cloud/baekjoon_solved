@@ -1,0 +1,85 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100000
+
+typedef struct Node {
+    int to;
+    struct Node* next;
+} Node;
+
+Node* graph[MAX + 1];     
+int indegree[MAX + 1];    
+int result[MAX + 1];      
+int time_arr[MAX + 1];    
+int queue[MAX + 1];       
+int front = 0, rear = 0;
+
+void enqueue(int x) {
+    queue[rear++] = x;
+}
+
+int dequeue() {
+    return queue[front++];
+}
+
+int isempty() {
+    return front == rear;
+}
+
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
+
+    for (int i = 1; i <= n; i++) {
+        time_arr[i] = 1;
+        result[i] = 1;
+        indegree[i] = 0;
+        graph[i] = NULL;
+    }
+
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        scanf("%d %d", &a, &b);
+
+        Node* newNode = (Node*)malloc(sizeof(Node));
+        newNode->to = b;
+        newNode->next = graph[a];
+        graph[a] = newNode;
+
+        indegree[b]++;
+    }
+
+    
+    for (int i = 1; i <= n; i++) {
+        if (indegree[i] == 0) {
+            enqueue(i);
+        }
+    }
+
+   
+    while (!isempty()) {
+        int now = dequeue();
+
+        for (Node* cur = graph[now]; cur != NULL; cur = cur->next) {
+            int nxt = cur->to;
+
+            if (result[nxt] < result[now] + 1) {
+                result[nxt] = result[now] + 1;
+            }
+
+            indegree[nxt]--;
+            if (indegree[nxt] == 0) {
+                enqueue(nxt);
+            }
+        }
+    }
+
+
+    for (int i = 1; i <= n; i++) {
+        printf("%d ", result[i]);
+    }
+
+    return 0;
+}
