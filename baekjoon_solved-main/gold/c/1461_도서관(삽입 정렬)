@@ -1,0 +1,54 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+void swap(int* a, int* b) {
+	int temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
+void insertsort(int* arr, int n) {
+	for (int i = 1; i < n; i++) {
+		int temp = arr[i];
+		int j = i - 1;
+		while (j >= 0 && arr[j] > temp) {
+			if (arr[j + 1] < arr[j])
+				swap(&arr[j + 1], &arr[j]);
+			j--;
+		}
+		arr[j + 1] = temp;
+	}
+} // 데이터 개수 매우적음 -> 삽입 정렬 유리
+
+int main() {
+	int n, m;
+	scanf("%d %d", &n, &m);
+	int* loca = (int*)malloc(n * sizeof(int));
+	for (int i = 0; i < n; i++)
+		scanf(" %d", &loca[i]);
+	insertsort(loca, n);
+	
+	int idx = 0;
+	for (int i = 0; i < n; i++) { // 출발 기준은 0이고 책을 가지려면 다시 0으로 돌아와야함 + 음수 -> 양수 전환시 반드시 오게 되있으므로 음수 양수 나눠서 생
+		if (loca[i] < 0)
+			idx++;
+		else
+			break;
+	}
+  
+	int result = 0;// 문제에서 책을 한 번에 m권씩 옮길 수 있다했으므로 m권씩 묶어서 생각했을 때 가장 먼곳부터 m번 째 지점까지 한 번에 가는게 유리 => 직전에 끊는게 좋음
+	for (int i = 0; i < idx; i += m)// => 시작 및 끝 지점에서부터 m칸씩 끊어서 계산하기
+		result += 2 * abs(loca[i]);
+	for (int i = n - 1; i >= idx; i -= m)
+		result += 2 * loca[i];
+
+	if (abs(loca[0]) > loca[n - 1]) result -= abs(loca[0]);
+	else result -= loca[n - 1];  // 마지막을 제외하면 반드시 0으로 와야함 -> 즉 가장 먼 곳을 최종 도착지로 설정해 거리를 한 번만 더
+
+	printf("%d\n", result);
+	free(loca);
+	return 0;
+}
+
+//핵심 아이디어: 양수 구간 음수 구간 나누기 + m 칸씩 끊어서 생각하기 + 맨 마지막은 편도
